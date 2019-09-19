@@ -25,6 +25,8 @@ type List interface {
 	IndexOf(value interface{}) int
 	// Insert adds elements at the specified index. Can return index not found error.
 	Insert(index int, values ...interface{}) error
+	// Get retrieves the value of the element at the specified index.
+	Get(index int) (interface{}, error)
 	// RemoveAt removes the element at the specified index.
 	RemoveAt(index int) error
 	// Set overwrites the value of the element at the specified index.
