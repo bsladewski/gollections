@@ -9,7 +9,7 @@ type Trie struct {
 // adds the supplied string to the trie character by character.
 func (trie *Trie) add(value []rune, index int) {
 	if index >= len(value) {
-		trie.children[0] = nil
+		trie.children[0] = &Trie{}
 		return
 	}
 	current := value[index]
@@ -46,13 +46,16 @@ func (trie *Trie) get(value []rune, index int) *Trie {
 
 // traverse returns all strings that begin with the specified prefix.
 // If no relevant strings exist, the resulting array will be empty.
-func (trie *Trie) traverse(prefix string) []string {
-	if trie.value == 0 {
+func (trie *Trie) traverse(prefix string, first bool) []string {
+	if !first && trie.value == 0 {
 		return []string{prefix}
 	}
 	values := []string{}
+	if !first {
+		prefix += string(trie.value)
+	}
 	for _, v := range trie.children {
-		values = append(values, v.traverse(prefix+string(trie.value))...)
+		values = append(values, v.traverse(prefix, false)...)
 	}
 	return values
 }
@@ -64,7 +67,7 @@ func (trie *Trie) Complete(value string) []string {
 	if node == nil {
 		return []string{}
 	}
-	return node.traverse(value)
+	return node.traverse(value, true)
 }
 
 // contains checks if the trie contains the specified value.
