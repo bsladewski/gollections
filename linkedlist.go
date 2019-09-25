@@ -1,7 +1,6 @@
 package gollections
 
 import (
-	"errors"
 	"reflect"
 )
 
@@ -59,7 +58,7 @@ type LinkedList struct {
 // nodeAt retrieves the element at the specified index.
 func (list *LinkedList) nodeAt(index int) (*listNode, error) {
 	if index < 0 || index >= list.length {
-		return nil, errors.New("index out of bounds")
+		return nil, ErrIndexOutOfBounds
 	}
 	current := list.head
 	for index > 0 {
@@ -72,12 +71,13 @@ func (list *LinkedList) nodeAt(index int) (*listNode, error) {
 // Add appends new elements to the end of the collection.
 func (list *LinkedList) Add(values ...interface{}) {
 	for _, value := range values {
-		e := &listNode{value: value}
 		if list.length == 0 {
+			e := &listNode{value: value}
 			list.head = e
 			list.tail = e
 		} else {
-			list.tail.addAfter(e)
+			list.tail.addAfter(value)
+			list.tail = list.tail.next
 		}
 		list.length++
 	}
@@ -121,7 +121,13 @@ func (list *LinkedList) Remove(values ...interface{}) {
 	for current != nil {
 		e := current
 		current = current.next
-		if _, ok := seen[current.value]; ok {
+		if _, ok := seen[e.value]; ok {
+			if e == list.head {
+				list.head = list.head.next
+			}
+			if e == list.tail {
+				list.tail = list.tail.previous
+			}
 			e.remove()
 			list.length--
 		}
@@ -168,8 +174,13 @@ func (list *LinkedList) Insert(index int, values ...interface{}) error {
 		return err
 	}
 	current = current.addBefore(values[0])
+	if current.next == list.head {
+		list.head = current
+	}
+	list.length++
 	for i := 1; i < len(values); i++ {
 		current = current.addAfter(values[i])
+		list.length++
 	}
 	return nil
 }
@@ -189,7 +200,14 @@ func (list *LinkedList) RemoveAt(index int) error {
 	if err != nil {
 		return err
 	}
+	if current == list.head {
+		list.head = list.head.next
+	}
+	if current == list.tail {
+		list.tail = list.tail.previous
+	}
 	current.remove()
+	list.length--
 	return nil
 }
 
@@ -206,7 +224,7 @@ func (list *LinkedList) Set(index int, value interface{}) error {
 // PeekFirst gets the value of the first element in the collection.
 func (list *LinkedList) PeekFirst() (interface{}, error) {
 	if list.head == nil {
-		return nil, errors.New("no such element")
+		return nil, ErrNoSuchElement
 	}
 	return list.head.value, nil
 }
@@ -214,18 +232,19 @@ func (list *LinkedList) PeekFirst() (interface{}, error) {
 // PopFirst gets the value of the first element in the collection. The element is removed.
 func (list *LinkedList) PopFirst() (interface{}, error) {
 	if list.head == nil {
-		return nil, errors.New("no such element")
+		return nil, ErrNoSuchElement
 	}
 	temp := list.head
 	list.head = list.head.next
 	temp.remove()
+	list.length--
 	return temp.value, nil
 }
 
 // PeekLast gets the value of the last element in the collection.
 func (list *LinkedList) PeekLast() (interface{}, error) {
 	if list.tail == nil {
-		return nil, errors.New("no such element")
+		return nil, ErrNoSuchElement
 	}
 	return list.tail.value, nil
 }
@@ -233,11 +252,12 @@ func (list *LinkedList) PeekLast() (interface{}, error) {
 // PopLast gets the value of the last element in the collection. The element is removed.
 func (list *LinkedList) PopLast() (interface{}, error) {
 	if list.tail == nil {
-		return nil, errors.New("no such element")
+		return nil, ErrNoSuchElement
 	}
 	temp := list.tail
 	list.tail = list.tail.previous
 	temp.remove()
+	list.length--
 	return temp.value, nil
 }
 
@@ -246,12 +266,11 @@ func (list *LinkedList) AddFirst(values ...interface{}) {
 	if len(values) == 0 {
 		return
 	}
-	if list.length == 0 {
-		list.head = &listNode{value: values[len(values)-1]}
-		list.tail = list.head
-		list.length = 1
-		list.AddFirst(values[:len(values)-1])
-	} else {
-		list.Insert(0, values)
+	for value := range values {
+		if list.length == 0 {
+			list.Add(value)
+			continue
+		}
+		list.Insert(0, value)
 	}
 }
