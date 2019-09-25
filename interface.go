@@ -1,7 +1,5 @@
 package gollections
 
-import "errors"
-
 // A Collection is a grouping of elements.
 type Collection interface {
 	// Add appends new elements to the end of the collection.
@@ -20,9 +18,6 @@ type Collection interface {
 	ToArray() []interface{}
 }
 
-// ErrIndexOutOfBounds the supplied index was invalid for this list.
-var ErrIndexOutOfBounds = errors.New("index out of bounds")
-
 // A List is an ordered collection that can be accessed by index.
 type List interface {
 	Collection
@@ -37,9 +32,6 @@ type List interface {
 	// Set overwrites the value of the element at the specified index.
 	Set(index int, value interface{}) error
 }
-
-// ErrNoSuchElement the polled element does not exist.
-var ErrNoSuchElement = errors.New("no such element")
 
 // A Queue provides FIFO access to a collection.
 type Queue interface {
