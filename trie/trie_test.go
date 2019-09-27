@@ -1,18 +1,18 @@
-package gollections_test
+package trie_test
 
 import (
 	"reflect"
 	"sort"
 	"testing"
 
-	"github.com/bsladewski/gollections"
+	"github.com/bsladewski/gollections/trie"
 )
 
 // TestTrie tests all exported functionality of the Trie type.
 func TestTrie(t *testing.T) {
 	add := []string{"car", "cart", "cat", "three", "tree", "zebra"}
 	addRemove := []string{"can", "care", "eat", "tame", "undo", "zen"}
-	trie := &gollections.Trie{}
+	trie := trie.NewTrie()
 	// complete, contains, remove work; empty trie
 	if result := trie.Complete("test"); !reflect.DeepEqual([]string{}, result) {
 		t.Fatalf("expected empty slice, got %v", result)

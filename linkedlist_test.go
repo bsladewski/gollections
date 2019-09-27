@@ -9,7 +9,7 @@ import (
 
 // Test the LinkedList as an implementation of Collection.
 func TestLinkedCollection(t *testing.T) {
-	var collection gollections.Collection = &gollections.LinkedList{}
+	collection := gollections.NewLinkedCollection()
 	// clear, contains, is empty, remove, size, to array; empty collection
 	collection.Clear()
 	if collection.Contains(0) {
@@ -61,7 +61,7 @@ func TestLinkedCollection(t *testing.T) {
 
 // Test the LinkedList as an implementation of List.
 func TestLinkedList(t *testing.T) {
-	var list gollections.List = &gollections.LinkedList{}
+	list := gollections.NewLinkedList()
 	// index of, insert, get, remove at, set; empty list
 	if index := list.IndexOf(0); index != -1 {
 		t.Fatalf("expected -1, got %d", index)
@@ -117,7 +117,7 @@ func TestLinkedList(t *testing.T) {
 
 // Test the LinkedList as an implementation of Queue.
 func TestLinkedQueue(t *testing.T) {
-	var queue gollections.Queue = &gollections.LinkedList{}
+	queue := gollections.NewLinkedQueue()
 	// peek first, pop first; empty queue
 	if _, err := queue.PeekFirst(); err != gollections.ErrNoSuchElement {
 		t.Fatalf("expected no such element error, got %v", err)
@@ -142,7 +142,7 @@ func TestLinkedQueue(t *testing.T) {
 
 // Test the LinkedList as an implementation of Deque.
 func TestLinkedDeque(t *testing.T) {
-	var deque gollections.Deque = &gollections.LinkedList{}
+	deque := gollections.NewLinkedDeque()
 	// peek last, pop last; empty deque
 	if _, err := deque.PeekLast(); err != gollections.ErrNoSuchElement {
 		t.Fatalf("expected no such element error, got %v", err)
