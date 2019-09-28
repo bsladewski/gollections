@@ -12,45 +12,45 @@ import (
 func TestTrie(t *testing.T) {
 	add := []string{"car", "cart", "cat", "three", "tree", "zebra"}
 	addRemove := []string{"can", "care", "eat", "tame", "undo", "zen"}
-	trie := trie.NewTrie()
+	tr := trie.NewTrie()
 	// complete, contains, remove work; empty trie
-	if result := trie.Complete("test"); !reflect.DeepEqual([]string{}, result) {
+	if result := tr.Complete("test"); !reflect.DeepEqual([]string{}, result) {
 		t.Fatalf("expected empty slice, got %v", result)
 	}
-	if trie.Contains("test") {
+	if tr.Contains("test") {
 		t.Fatal("expected contains to return false on empty trie")
 	}
-	trie.Remove("test")
+	tr.Remove("test")
 	// add
-	trie.Add(add...)
-	trie.Add(addRemove...)
-	if !trie.Contains(add...) || !trie.Contains(addRemove...) {
+	tr.Add(add...)
+	tr.Add(addRemove...)
+	if !tr.Contains(add...) || !tr.Contains(addRemove...) {
 		t.Error("expected contains to return true for all added elements")
 	}
 	expected := append(add, addRemove...)
 	sort.Strings(expected)
-	got := trie.Complete("")
+	got := tr.Complete("")
 	sort.Strings(got)
 	if !reflect.DeepEqual(expected, got) {
 		t.Fatalf("expected %v, got %v", expected, got)
 	}
 	// remove
-	trie.Remove(addRemove...)
-	if trie.Contains(addRemove...) {
+	tr.Remove(addRemove...)
+	if tr.Contains(addRemove...) {
 		t.Error("expected contains to return false for removed elements")
 	}
-	if !trie.Contains(add...) {
+	if !tr.Contains(add...) {
 		t.Error("expected elements not removed to still exist")
 	}
 	expected = add
-	got = trie.Complete("")
+	got = tr.Complete("")
 	sort.Strings(got)
 	if !reflect.DeepEqual(expected, got) {
 		t.Fatalf("expected %v, got %v", expected, got)
 	}
 	// complete
 	expected = []string{"car", "cart", "cat"}
-	got = trie.Complete("ca")
+	got = tr.Complete("ca")
 	sort.Strings(got)
 	if !reflect.DeepEqual(expected, got) {
 		t.Fatalf("expected %v, got %v", expected, got)
