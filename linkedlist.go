@@ -141,11 +141,13 @@ func (l *linkedList) Size() int {
 
 // ToArray gets an array representation of the collection.
 func (l *linkedList) ToArray() []interface{} {
-	array := []interface{}{}
+	array := make([]interface{}, l.length)
 	current := l.head
+	index := 0
 	for current != nil {
-		array = append(array, current.value)
+		array[index] = current.value
 		current = current.next
+		index++
 	}
 	return array
 }
