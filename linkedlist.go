@@ -1,6 +1,7 @@
 package gollections
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -137,6 +138,32 @@ func (l *linkedList) Remove(values ...interface{}) {
 // Size gets the number of elements in the collection.
 func (l *linkedList) Size() int {
 	return l.length
+}
+
+// SliceCopy copies all values in the collection to the supplied slice.
+func (l *linkedList) SliceCopy(ptrToSlice interface{}) error {
+	value := reflect.ValueOf(ptrToSlice)
+	if value.Kind() != reflect.Ptr {
+		return fmt.Errorf("supplied value of type %v is not a pointer", value.Type())
+	}
+	value = value.Elem()
+	if value.Kind() != reflect.Slice {
+		return fmt.Errorf("supplied value of type %v is not a pointer to a slice", value.Type())
+	}
+	value.Set(reflect.MakeSlice(value.Type(), l.length, l.length))
+	current := l.head
+	index := 0
+	for current != nil {
+		listValue := reflect.ValueOf(current.value)
+		if value.Index(index).Kind() != listValue.Kind() {
+			return fmt.Errorf("cannot assign type %v to element of type %v", listValue.Kind(),
+				value.Index(index).Kind())
+		}
+		value.Index(index).Set(reflect.ValueOf(current.value))
+		current = current.next
+		index++
+	}
+	return nil
 }
 
 // ToArray gets an array representation of the collection.

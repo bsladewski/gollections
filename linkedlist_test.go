@@ -7,7 +7,7 @@ import (
 	"github.com/bsladewski/gollections"
 )
 
-// Test the LinkedList as an implementation of Collection.
+// Test the linkedList as an implementation of Collection.
 func TestLinkedCollection(t *testing.T) {
 	collection := gollections.NewLinkedCollection()
 	// clear, contains, is empty, remove, size, to array; empty collection
@@ -59,7 +59,29 @@ func TestLinkedCollection(t *testing.T) {
 	}
 }
 
-// Test the LinkedList as an implementation of List.
+// TestLinkedCollectionSliceCopy tests the slice copy function for the linkedList implementation
+// of Collection.
+func TestLinkedCollectionSliceCopy(t *testing.T) {
+	list := gollections.NewLinkedList()
+	// slice copy; empty list
+	got := &[]int{}
+	if err := list.SliceCopy(got); err != nil {
+		t.Fatalf("expected empty array, got %v", *got)
+	}
+	// slice copy; list with ints
+	expected := []int{1, 2, 3}
+	list.Add(1, 2, 3)
+	if err := list.SliceCopy(got); err != nil || !reflect.DeepEqual(expected, *got) {
+		t.Fatalf("expected %v, got %v", expected, *got)
+	}
+	// slice copy; list with a string
+	list.Add("foo")
+	if err := list.SliceCopy(got); err == nil {
+		t.Fatalf("expected type error, got %v error: %v", *got, err)
+	}
+}
+
+// Test the linkedList as an implementation of List.
 func TestLinkedList(t *testing.T) {
 	list := gollections.NewLinkedList()
 	// index of, insert, get, remove at, set; empty list
@@ -115,7 +137,7 @@ func TestLinkedList(t *testing.T) {
 	}
 }
 
-// Test the LinkedList as an implementation of Queue.
+// Test the linkedList as an implementation of Queue.
 func TestLinkedQueue(t *testing.T) {
 	queue := gollections.NewLinkedQueue()
 	// peek first, pop first; empty queue
@@ -140,7 +162,7 @@ func TestLinkedQueue(t *testing.T) {
 	}
 }
 
-// Test the LinkedList as an implementation of Deque.
+// Test the linkedList as an implementation of Deque.
 func TestLinkedDeque(t *testing.T) {
 	deque := gollections.NewLinkedDeque()
 	// peek last, pop last; empty deque

@@ -14,6 +14,8 @@ type Collection interface {
 	Remove(values ...interface{})
 	// Size gets the number of elements in the collection.
 	Size() int
+	// SliceCopy copies all values in the collection to the supplied slice.
+	SliceCopy(ptrToSlice interface{}) error
 	// ToArray gets an array representation of the collection.
 	ToArray() []interface{}
 }
